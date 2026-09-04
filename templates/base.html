@@ -12,7 +12,7 @@
 </head>
 <body>
   <aside class="sidebar">
-    <a class="brand" href="{% url 'applications:dashboard' %}"><span class="brand-mark">R</span><span>Seguimiento Postulaciones de trabajo</span></a>
+    <a class="brand" href="{% url 'applications:dashboard' %}"><span class="brand-mark">DE</span><span>Seguimiento Postulaciones de trabajo</span></a>
     <nav>
       <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'applications:dashboard' %}"><span>⌂</span> Resumen</a>
       <a class="nav-link {% if request.resolver_match.url_name == 'list' %}active{% endif %}" href="{% url 'applications:list' %}"><span>▤</span> Postulaciones</a>
