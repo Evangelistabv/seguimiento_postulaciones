@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ application.title }} · Ruta laboral{% endblock %}
+{% block content %}
+<a class="back-link" href="{% url 'applications:list' %}">← Volver a postulaciones</a>
+<section class="detail-hero">
+  <div class="company-avatar large">{{ application.company|default:application.title|slice:":1"|upper }}</div>
+  <div class="detail-title"><span class="eyebrow">{{ application.company|default:"Empresa por completar" }}</span><h1>{{ application.title }}</h1><div class="tag-row"><span class="status status-{{ application.status }}">{{ application.get_status_display }}</span><span class="tag">{{ application.get_work_mode_display }}</span>{% if application.location %}<span class="tag">⌖ {{ application.location }}</span>{% endif %}</div></div>
+  <div class="hero-actions">{% if application.vacancy_url %}<a class="button secondary" href="{{ application.vacancy_url }}" target="_blank" rel="noopener">Abrir vacante ↗</a>{% endif %}<a class="button primary" href="{% url 'applications:update' application.pk %}">Editar</a></div>
+</section>
+<div class="detail-grid">
+  <div class="detail-main">
+    <section class="panel"><div class="panel-heading"><div><h2>Información clave</h2><p>Los datos que necesitas para evaluar la oportunidad.</p></div></div>
+      <dl class="facts"><div><dt>Salario</dt><dd>{{ application.salary_display }}</dd></div><div><dt>Postulación</dt><dd>{{ application.applied_on|date:"d M Y"|default:"Sin registrar" }}</dd></div><div><dt>Fuente</dt><dd>{{ application.source|default:"Sin registrar" }}</dd></div><div><dt>Próximo seguimiento</dt><dd>{{ application.next_step_on|date:"d M Y"|default:"Sin programar" }}</dd></div></dl>
+    </section>
+    <section class="panel content-panel"><h2>Responsabilidades de la vacante</h2>{% if application.responsibilities %}<div class="rich-text">{{ application.responsibilities|linebreaks }}</div>{% else %}<div class="empty-inline">Aún no has registrado las actividades descritas en la vacante.</div>{% endif %}</section>
+    <section class="panel content-panel"><h2>Requisitos clave</h2>{% if application.requirements %}<div class="rich-text">{{ application.requirements|linebreaks }}</div>{% else %}<div class="empty-inline">Añade las habilidades y requisitos para preparar mejor tu candidatura.</div>{% endif %}</section>
+    {% if application.notes %}<section class="panel content-panel"><h2>Notas</h2><div class="rich-text">{{ application.notes|linebreaks }}</div></section>{% endif %}
+  </div>
+  <aside class="detail-aside">
+    <section class="panel"><div class="panel-heading"><div><h2>Bitácora</h2><p>Acciones, entrevistas y seguimientos.</p></div><button class="text-button" data-toggle="activity-form">＋ Añadir</button></div>
+      <form class="activity-form" id="activity-form" method="post">{% csrf_token %}{{ activity_form.as_div }}<button class="button primary full" type="submit">Guardar actividad</button></form>
+      <div class="timeline">
+      {% for activity in application.activities.all %}<div class="timeline-item {% if activity.completed %}done{% endif %}"><span class="timeline-dot"></span><div class="timeline-content"><div class="timeline-top"><strong>{{ activity.title }}</strong><form method="post" action="{% url 'applications:toggle_activity' activity.pk %}">{% csrf_token %}<button class="check-button" title="Marcar como completada">{% if activity.completed %}✓{% else %}○{% endif %}</button></form></div><span class="activity-kind">{{ activity.get_kind_display }}</span>{% if activity.details %}<p>{{ activity.details }}</p>{% endif %}<small>{% if activity.scheduled_for %}{{ activity.scheduled_for|date:"d M Y · H:i" }}{% else %}Registrada {{ activity.created_at|date:"d M Y" }}{% endif %}</small></div></div>
+      {% empty %}<div class="empty small"><strong>Sin actividad todavía</strong><p>Añade el siguiente paso para mantener esta oportunidad en movimiento.</p></div>{% endfor %}
+      </div>
+    </section>
+  </aside>
+</div>
+{% endblock %}

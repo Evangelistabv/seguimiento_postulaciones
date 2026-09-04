@@ -1,0 +1,35 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Ruta laboral{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="{% url 'applications:dashboard' %}"><span class="brand-mark">R</span><span>Ruta laboral</span></a>
+    <nav>
+      <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'applications:dashboard' %}"><span>⌂</span> Resumen</a>
+      <a class="nav-link {% if request.resolver_match.url_name == 'list' %}active{% endif %}" href="{% url 'applications:list' %}"><span>▤</span> Postulaciones</a>
+    </nav>
+    <div class="sidebar-note"><strong>Tu búsqueda, visible.</strong><p>Registra el siguiente paso para que ninguna oportunidad se enfríe.</p></div>
+  </aside>
+  <main class="main-shell">
+    <header class="topbar">
+      <button class="menu-button" aria-label="Abrir menú">☰</button>
+      <div class="topbar-title">Seguimiento profesional</div>
+      <a class="button primary compact" href="{% url 'applications:create' %}">＋ Nueva postulación</a>
+    </header>
+    <div class="page">
+      {% for message in messages %}<div class="toast">{{ message }}</div>{% endfor %}
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+  <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

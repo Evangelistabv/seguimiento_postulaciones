@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · Ruta laboral{% endblock %}
+{% block content %}
+<a class="back-link" href="{% if application %}{{ application.get_absolute_url }}{% else %}{% url 'applications:list' %}{% endif %}">← Cancelar y volver</a>
+<section class="form-heading"><span class="eyebrow">Datos de la oportunidad</span><h1>{{ title }}</h1><p>Guarda primero lo esencial. Puedes completar el resto cuando tengas más información.</p></section>
+<form method="post" class="application-form">{% csrf_token %}
+  {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+  <section class="panel form-section"><div class="section-number">1</div><div class="form-section-content"><h2>Identificación</h2><p>Puesto, empresa y origen de la vacante.</p><div class="form-grid">{% for field in form %}{% if field.name in 'title company vacancy_url source status priority' %}<div class="field field-{{ field.name }}"><label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span>*</span>{% endif %}</label>{{ field }}{{ field.errors }}</div>{% endif %}{% endfor %}</div></div></section>
+  <section class="panel form-section"><div class="section-number">2</div><div class="form-section-content"><h2>Condiciones</h2><p>Modalidad, ubicación y rango salarial.</p><div class="form-grid">{% for field in form %}{% if field.name in 'location work_mode salary_min salary_max currency salary_period applied_on next_step_on' %}<div class="field field-{{ field.name }}"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endif %}{% endfor %}</div></div></section>
+  <section class="panel form-section"><div class="section-number">3</div><div class="form-section-content"><h2>Preparación</h2><p>Captura lo que harías en el puesto y lo que necesitas demostrar.</p><div class="form-grid single">{% for field in form %}{% if field.name in 'responsibilities requirements notes' %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}{{ field.errors }}</div>{% endif %}{% endfor %}</div></div></section>
+  <div class="form-actions"><a class="button secondary" href="{% if application %}{{ application.get_absolute_url }}{% else %}{% url 'applications:list' %}{% endif %}">Cancelar</a><button class="button primary" type="submit">Guardar postulación</button></div>
+</form>
+{% endblock %}

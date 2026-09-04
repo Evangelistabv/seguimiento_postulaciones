@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Resumen · Ruta laboral{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div><span class="eyebrow">Tu panorama</span><h1>Avanza con intención</h1><p>Revisa lo importante y decide tu siguiente movimiento.</p></div>
+  <a class="button primary" href="{% url 'applications:create' %}">＋ Registrar vacante</a>
+</section>
+<section class="metrics">
+  <article class="metric"><span>Postulaciones activas</span><strong>{{ active_count }}</strong><small>{{ total_count }} registradas en total</small></article>
+  <article class="metric"><span>En entrevista</span><strong>{{ interview_count }}</strong><small>Procesos que requieren preparación</small></article>
+  <article class="metric accent"><span>Ofertas</span><strong>{{ offer_count }}</strong><small>Recibidas o aceptadas</small></article>
+  <article class="metric warning"><span>Acciones vencidas</span><strong>{{ overdue|length }}</strong><small>Necesitan atención hoy</small></article>
+</section>
+<div class="dashboard-grid">
+  <section class="panel span-2">
+    <div class="panel-heading"><div><h2>Procesos recientes</h2><p>Las oportunidades en las que has trabajado últimamente.</p></div><a href="{% url 'applications:list' %}">Ver todas →</a></div>
+    <div class="job-list">
+      {% for application in recent %}
+      <a class="job-row" href="{{ application.get_absolute_url }}">
+        <span class="company-avatar">{{ application.company|default:application.title|slice:":1"|upper }}</span>
+        <span class="job-main"><strong>{{ application.title }}</strong><small>{{ application.company|default:"Empresa por completar" }} · {{ application.get_work_mode_display }}</small></span>
+        <span class="status status-{{ application.status }}">{{ application.get_status_display }}</span>
+        <span class="job-date">Actualizada<br>{{ application.updated_at|date:"d M" }}</span>
+        <span class="chevron">›</span>
+      </a>
+      {% empty %}<div class="empty"><strong>Aún no hay postulaciones</strong><p>Registra tu primera oportunidad y comienza a darle seguimiento.</p></div>{% endfor %}
+    </div>
+  </section>
+  <section class="panel">
+    <div class="panel-heading"><div><h2>Próximas acciones</h2><p>Tu agenda de seguimiento.</p></div></div>
+    <div class="timeline compact-timeline">
+      {% for activity in upcoming %}
+      <div class="timeline-item"><span class="timeline-dot"></span><div><strong>{{ activity.title }}</strong><a href="{{ activity.application.get_absolute_url }}">{{ activity.application.title }}</a><small>{{ activity.scheduled_for|date:"D d M · H:i" }}</small></div></div>
+      {% empty %}<div class="empty small"><strong>Agenda despejada</strong><p>Añade una actividad desde cualquier postulación.</p></div>{% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

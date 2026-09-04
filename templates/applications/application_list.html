@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Postulaciones · Ruta laboral{% endblock %}
+{% block content %}
+<section class="page-heading"><div><span class="eyebrow">Pipeline personal</span><h1>Postulaciones</h1><p>Busca, filtra y prioriza tus oportunidades.</p></div><a class="button primary" href="{% url 'applications:create' %}">＋ Nueva postulación</a></section>
+<form class="filter-bar" method="get">
+  <label class="search"><span>⌕</span><input name="q" value="{{ query }}" placeholder="Buscar puesto, empresa o plataforma"></label>
+  <select name="status" onchange="this.form.submit()"><option value="">Todos los estados</option>{% for value,label in statuses %}<option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+  <button class="button secondary" type="submit">Buscar</button>
+</form>
+<section class="panel table-panel">
+  <div class="responsive-table"><table><thead><tr><th>Oportunidad</th><th>Estado</th><th>Prioridad</th><th>Postulación</th><th>Próximo paso</th><th></th></tr></thead><tbody>
+  {% for application in applications %}<tr><td><a class="table-title" href="{{ application.get_absolute_url }}">{{ application.title }}</a><small>{{ application.company|default:"Empresa por completar" }} · {{ application.source|default:"Fuente pendiente" }}</small></td><td><span class="status status-{{ application.status }}">{{ application.get_status_display }}</span></td><td><span class="priority priority-{{ application.priority }}">{{ application.get_priority_display }}</span></td><td>{{ application.applied_on|date:"d M Y"|default:"—" }}</td><td>{{ application.next_step_on|date:"d M Y"|default:"Sin programar" }}</td><td><a class="icon-link" href="{{ application.get_absolute_url }}">›</a></td></tr>
+  {% empty %}<tr><td colspan="6"><div class="empty"><strong>No encontramos resultados</strong><p>Prueba otro filtro o registra una nueva vacante.</p></div></td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+{% endblock %}
